@@ -14,26 +14,32 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 
+# ustawienie rozmiaru ekranu
 size = (700, 500)
 display_width = 700
 display_height = 500
 screen = pygame.display.set_mode(size)
+
+# ustawienie ikonki oraz tekstu okna
 icon = pygame.image.load('pong_icon.png')
 pygame.display.set_icon(icon)
 pygame.display.set_caption("Pong")
 
+# paletka A
 paddleA = Paddle(WHITE, 10, 100)
 paddleA.rect.x = 20
 paddleA.rect.y = 200
 paddleAup = pygame.K_w
 paddleAdown = pygame.K_s
 
+# paletka B
 paddleB = Paddle(WHITE, 10, 100)
 paddleB.rect.x = 670
 paddleB.rect.y = 200
 paddleBup = pygame.K_UP
 paddleBdown = pygame.K_DOWN
 
+# piłeczka
 ball = Ball(WHITE, 10, 10)
 ball.rect.x = 345
 ball.rect.y = 195
@@ -75,7 +81,7 @@ def game():
             if event.type == pygame.QUIT:
                 carryOn = False
 
-        # Moving the paddles when the use uses the arrow keys (player A) or "W/S" keys (player B)
+        # Poruszanie się graczy
         keys = pygame.key.get_pressed()
         if keys[paddleAup]:
             paddleA.moveUp(5)
@@ -86,7 +92,6 @@ def game():
         if keys[paddleBdown]:
             paddleB.moveDown(5)
 
-            # --- Game logic should go here
         all_sprites_list.update()
 
         # Sprwadzenie czy się odbija od ściany
@@ -124,21 +129,23 @@ def game():
         clock.tick(FPS)
 
 
+# Niedokończone ze względu na brak czasu
 def game_intro():
     intro = True
     while intro:
         for EVENT in pygame.event.get():
             print(EVENT)
-            if EVENT.type == pygame.MOUSEBUTTONUP:
-                intro = False
-
             if EVENT.type == pygame.KEYDOWN:
                 if EVENT.type == pygame.K_RETURN:
+                    print("działa")
                     intro = False
                 if EVENT.type == pygame.K_SPACE:
                     intro = False
                 if EVENT.type == pygame.K_ESCAPE:
                     intro = False
+
+            if EVENT.type == pygame.MOUSEBUTTONUP:
+                intro = False
 
             if EVENT.type == pygame.QUIT:
                 pygame.quit()
@@ -147,10 +154,13 @@ def game_intro():
         screen.fill(BLACK)
 
         largeText = pygame.font.Font('Retro.ttf', 40)
+        smallText = pygame.font.Font('Retro.ttf', 20)
         TextSurf, TextRect = text_objects("Radex presents - Ping", largeText)
+        Text2Surf, Text2Rect = text_objects("Click with a mouse to proceed", smallText)
         TextRect.center = ((display_width / 2), (display_height / 2))
         screen.blit(TextSurf, TextRect)
-        pygame.display.update()
+        screen.blit(Text2Surf, Text2Rect)
+        pygame.display.flip()
         clock.tick(FPS)
 
 
@@ -169,6 +179,7 @@ def selection(pos, i, list):
     return pos
 
 
+# Niedokończone ze względu na brak czasu
 def change_key_menu(selected):
     change_key_menu = True
     text_menu = ""
@@ -215,7 +226,8 @@ def change_key_menu(selected):
 
 def main_menu():
     menu = True
-    selectionList = ["start", "options", "quit"]
+    # selectionList = ["start", "options", "quit"]
+    selectionList = ["start", "quit"]
     selected = "start"
     pos = 0
     while menu:
@@ -236,9 +248,9 @@ def main_menu():
                     if selected == "start":
                         menu = False
                         game()
-                    if selected == "options":
-                        menu = False
-                        options_menu()
+                    # if selected == "options":
+                    #     menu = False
+                    #     options_menu()
                     if selected == "quit":
                         pygame.quit()
                         quit()
@@ -250,10 +262,10 @@ def main_menu():
             text_start = text_format("START", font, 60, YELLOW)
         else:
             text_start = text_format("START", font, 60, WHITE)
-        if selected == "options":
-            text_options = text_format("OPTIONS", font, 60, YELLOW)
-        else:
-            text_options = text_format("OPTIONS", font, 60, WHITE)
+        # if selected == "options":
+        #     text_options = text_format("OPTIONS", font, 60, YELLOW)
+        # else:
+        #     text_options = text_format("OPTIONS", font, 60, WHITE)
         if selected == "quit":
             text_quit = text_format("QUIT", font, 60, YELLOW)
         else:
@@ -261,93 +273,93 @@ def main_menu():
 
         title_rect = title.get_rect()
         start_rect = text_start.get_rect()
-        options_rect = text_options.get_rect()
+        # options_rect = text_options.get_rect()
         quit_rect = text_quit.get_rect()
 
         # Teksty głównego Menu
         screen.blit(title, (display_width / 2 - (title_rect[2] / 2), 40))
         screen.blit(text_start, (display_width / 2 - (start_rect[2] / 2), 200))
-        screen.blit(text_options, (display_width / 2 - (options_rect[2] / 2), 250))
+        # screen.blit(text_options, (display_width / 2 - (options_rect[2] / 2), 250))
         screen.blit(text_quit, (display_width / 2 - (quit_rect[2] / 2), 300))
         pygame.display.update()
         clock.tick(FPS)
         pygame.display.set_caption("Ping")
 
 
-def options_menu():
-    options = True
-    selectionList = ["p1up", "p1down", "p2up", "p2down", "back"]
-    selected = "p1up"
-    pos = 0
-
-    while options:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
-                    pos = selection(pos, -1, selectionList)
-                    selected = selectionList[pos]
-                    print(selected)
-                if event.key == pygame.K_DOWN:
-                    pos = selection(pos, 1, selectionList)
-                    selected = selectionList[pos]
-                    print(selected)
-                if event.key == pygame.K_RETURN:
-                    if selected == "p1up" or "p1down" or "p2up" or "p2down":
-                        options = False
-                        change_key_menu(selected)
-                    if selected == "back":
-                        options = False
-                        main_menu()
-                    if selected == "quit":
-                        pygame.quit()
-                        quit()
-
-        # UI opcji
-        screen.fill(BLACK)
-        options = text_format("Options", font, 90, BLUE)
-
-        if selected == "p1up":
-            text_p1_up = text_format("PLAYER 1 UP", font, 45, YELLOW)
-        else:
-            text_p1_up = text_format("PLAYER 1 UP", font, 45, WHITE)
-        if selected == "p1down":
-            text_p1_down = text_format("PLAYER 1 DOWN", font, 45, YELLOW)
-        else:
-            text_p1_down = text_format("PLAYER 1 DOWN", font, 45, WHITE)
-        if selected == "p2up":
-            text_p2_up = text_format("PLAYER 2 UP", font, 45, YELLOW)
-        else:
-            text_p2_up = text_format("PLAYER 2 UP", font, 45, WHITE)
-        if selected == "p2down":
-            text_p2_down = text_format("PLAYER 2 DOWN", font, 45, YELLOW)
-        else:
-            text_p2_down = text_format("PLAYER 2 DOWN", font, 45, WHITE)
-        if selected == "back":
-            text_back = text_format("BACK", font, 45, YELLOW)
-        else:
-            text_back = text_format("BACK", font, 45, WHITE)
-
-        options_rect = options.get_rect()
-        p1_up_rect = text_p1_up.get_rect()
-        p1_down_rect = text_p1_down.get_rect()
-        p2_up_rect = text_p2_up.get_rect()
-        p2_down_rect = text_p2_down.get_rect()
-        back_rect = text_back.get_rect()
-
-        # Teksty opcji
-
-        screen.blit(options, (display_width / 2 - (options_rect[2] / 2), 40))
-        screen.blit(text_p1_up, (display_width / 2 - (p1_up_rect[2] / 2), 240))
-        screen.blit(text_p1_down, (display_width / 2 - (p1_down_rect[2] / 2), 280))
-        screen.blit(text_p2_up, (display_width / 2 - (p2_up_rect[2] / 2), 320))
-        screen.blit(text_p2_down, (display_width / 2 - (p2_down_rect[2] / 2), 360))
-        screen.blit(text_back, (display_width / 2 - (back_rect[2] / 2), 400))
-        pygame.display.update()
-        clock.tick(FPS)
-        pygame.display.set_caption("Ping")
+# def options_menu():
+#     options = True
+#     selectionList = ["p1up", "p1down", "p2up", "p2down", "back"]
+#     selected = "p1up"
+#     pos = 0
+#
+#     while options:
+#         for event in pygame.event.get():
+#             if event.type == pygame.QUIT:
+#                 pygame.quit()
+#                 quit()
+#             if event.type == pygame.KEYDOWN:
+#                 if event.key == pygame.K_UP:
+#                     pos = selection(pos, -1, selectionList)
+#                     selected = selectionList[pos]
+#                     print(selected)
+#                 if event.key == pygame.K_DOWN:
+#                     pos = selection(pos, 1, selectionList)
+#                     selected = selectionList[pos]
+#                     print(selected)
+#                 if event.key == pygame.K_RETURN:
+#                     if selected == "p1up" or "p1down" or "p2up" or "p2down":
+#                         options = False
+#                         change_key_menu(selected)
+#                     if selected == "back":
+#                         options = False
+#                         main_menu()
+#                     if selected == "quit":
+#                         pygame.quit()
+#                         quit()
+#
+#         # UI opcji
+#         screen.fill(BLACK)
+#         options = text_format("Options", font, 90, BLUE)
+#
+#         if selected == "p1up":
+#             text_p1_up = text_format("PLAYER 1 UP", font, 45, YELLOW)
+#         else:
+#             text_p1_up = text_format("PLAYER 1 UP", font, 45, WHITE)
+#         if selected == "p1down":
+#             text_p1_down = text_format("PLAYER 1 DOWN", font, 45, YELLOW)
+#         else:
+#             text_p1_down = text_format("PLAYER 1 DOWN", font, 45, WHITE)
+#         if selected == "p2up":
+#             text_p2_up = text_format("PLAYER 2 UP", font, 45, YELLOW)
+#         else:
+#             text_p2_up = text_format("PLAYER 2 UP", font, 45, WHITE)
+#         if selected == "p2down":
+#             text_p2_down = text_format("PLAYER 2 DOWN", font, 45, YELLOW)
+#         else:
+#             text_p2_down = text_format("PLAYER 2 DOWN", font, 45, WHITE)
+#         if selected == "back":
+#             text_back = text_format("BACK", font, 45, YELLOW)
+#         else:
+#             text_back = text_format("BACK", font, 45, WHITE)
+#
+#         options_rect = options.get_rect()
+#         p1_up_rect = text_p1_up.get_rect()
+#         p1_down_rect = text_p1_down.get_rect()
+#         p2_up_rect = text_p2_up.get_rect()
+#         p2_down_rect = text_p2_down.get_rect()
+#         back_rect = text_back.get_rect()
+#
+#         # Teksty opcji
+#
+#         screen.blit(options, (display_width / 2 - (options_rect[2] / 2), 40))
+#         screen.blit(text_p1_up, (display_width / 2 - (p1_up_rect[2] / 2), 240))
+#         screen.blit(text_p1_down, (display_width / 2 - (p1_down_rect[2] / 2), 280))
+#         screen.blit(text_p2_up, (display_width / 2 - (p2_up_rect[2] / 2), 320))
+#         screen.blit(text_p2_down, (display_width / 2 - (p2_down_rect[2] / 2), 360))
+#         screen.blit(text_back, (display_width / 2 - (back_rect[2] / 2), 400))
+#         pygame.display.update()
+#         clock.tick(FPS)
+#         pygame.display.set_caption("Ping")
 
 
 game_intro()
